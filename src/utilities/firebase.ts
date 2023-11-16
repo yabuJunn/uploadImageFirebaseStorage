@@ -1,13 +1,15 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc } from "firebase/firestore"; 
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, uploadString, getDownloadURL } from "firebase/storage";
-
-
-
 
 // TODO: Replace the following with your app's Firebase project configuration
 export const firebaseConfig = {
-  
+  apiKey: "AIzaSyAF7bl-bhualC-oJKaZSn_onN7cd19QTrU",
+  authDomain: "prueba-primer-firebase.firebaseapp.com",
+  projectId: "prueba-primer-firebase",
+  storageBucket: "gs://prueba-primer-firebase.appspot.com",
+  messagingSenderId: "591718005257",
+  appId: "1:591718005257:web:547501b6b6fcace38d56d8"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -62,5 +64,6 @@ const storageURLtoFirebase = async (name: string, path: string) => {
   console.log("Se subio")
 }
 
+export const subirFormulario = async () => {
 
-
+}

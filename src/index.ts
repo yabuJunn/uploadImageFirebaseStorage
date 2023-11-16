@@ -22,20 +22,22 @@ class AppContainer extends HTMLElement {
             const button = this.ownerDocument.createElement("button")
             button.innerText = "Download Images"
             this.shadowRoot.appendChild(button)
-            
+
             inputFile.addEventListener("change", () => {
                 console.log("Archivo")
                 const fileList = inputFile.files;
                 console.log(fileList)
                 subirArchivo(fileList![0])
+
+                button.addEventListener("click", async () => {
+                    const url = await pedirURL(`images/${fileList![0].name}`)
+                    const image = this.ownerDocument.createElement("img")
+                    image.setAttribute("src", url)
+                    this.shadowRoot?.appendChild(image)
+                })
             }, false)
 
-            button.addEventListener("click", async () => {
-                const url = await pedirURL("images")
-                const image = this.ownerDocument.createElement("img")
-                image.setAttribute("src", url)
-                this.shadowRoot?.appendChild(image)
-            })
+
         }
 
     }
