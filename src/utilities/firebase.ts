@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, uploadString, getDownloadURL } from "firebase/storage";
 
 // TODO: Replace the following with your app's Firebase project configuration
@@ -64,6 +64,60 @@ const storageURLtoFirebase = async (name: string, path: string) => {
   console.log("Se subio")
 }
 
-export const subirFormulario = async () => {
+export const subirProducto = async (nombre: string, descripcion: string, precio: string, cantidad: string, imagen: string) => {
+  await setDoc(doc(db, "productos", nombre), {
+    name: nombre,
+    descripcion: descripcion,
+    precio: precio,
+    cantidad: cantidad,
+    imagen: imagen
+  });
+  console.log("Se subio el producto")
+}
 
+export const traerProductos = async () => {
+  const querySnapshot = await getDocs(collection(db, "productos"));
+  const listaProductos: any[] = []
+  querySnapshot.forEach((doc) => {
+    console.log(doc.data())
+    listaProductos.push(doc.data())
+  });
+  return listaProductos
+}
+
+const crearProductos = async (contenedorProductos: HTMLElement) => {
+  const listaProductos = await traerProductos()
+  contenedorProductos.innerHTML = ""
+  listaProductos.forEach((producto) => {
+    const contenedorProductoSolo = document.createElement("div")
+    contenedorProductoSolo.classList.add("contenedorProductoSolo")
+    contenedorProductos.appendChild(contenedorProductoSolo)
+
+    const imagenProducto = document.createElement("img")
+    imagenProducto.src = producto.imagen
+    contenedorProductoSolo.appendChild(imagenProducto)
+
+    const tituloProducto = document.createElement("h1")
+    tituloProducto.innerText = producto.name
+    contenedorProductoSolo.appendChild(tituloProducto)
+
+    const precioProducto = document.createElement("h2")
+    precioProducto.innerText = producto.precio
+    contenedorProductoSolo.appendChild(precioProducto)
+
+    const cantidadProducto = document.createElement("h3")
+    cantidadProducto.innerText = producto.cantidad
+    contenedorProductoSolo.appendChild(cantidadProducto)
+
+    const descripcionProducto = document.createElement("p")
+    descripcionProducto.innerText = producto.descripcion
+    contenedorProductoSolo.appendChild(descripcionProducto)
+  })
+}
+
+export const tiempoRealProductos = async (contenedor: HTMLElement) => {
+  const q = await query(collection(db, "productos"));
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    crearProductos(contenedor)
+  });
 }

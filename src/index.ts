@@ -1,6 +1,6 @@
 console.log("Funciona Typescript")
 import "./utilities/firebase"
-import { pedirURL, subirArchivo } from "./utilities/firebase"
+import { pedirURL, subirArchivo, subirProducto, tiempoRealProductos, traerProductos } from "./utilities/firebase"
 
 class AppContainer extends HTMLElement {
     constructor() {
@@ -9,37 +9,98 @@ class AppContainer extends HTMLElement {
     }
 
     connectedCallback() {
+        this.mount()
+
+    }
+
+    mount() {
         this.render()
+
     }
 
     render() {
         if (this.shadowRoot) {
-            console.log("App Container")
-            const inputFile = this.ownerDocument.createElement("input")
-            inputFile.setAttribute("type", "file")
-            this.shadowRoot.appendChild(inputFile)
+            const linkCSS = this.ownerDocument.createElement("link")
+            linkCSS.setAttribute("rel", "stylesheet")
+            linkCSS.setAttribute("href", "/src/index.css")
+            this.shadowRoot.appendChild(linkCSS)
 
-            const button = this.ownerDocument.createElement("button")
-            button.innerText = "Download Images"
-            this.shadowRoot.appendChild(button)
+            const mainContainer = this.ownerDocument.createElement("section")
+            mainContainer.setAttribute("id", "mainContainerSection")
+            this.shadowRoot.appendChild(mainContainer)
 
-            inputFile.addEventListener("change", () => {
-                console.log("Archivo")
-                const fileList = inputFile.files;
-                console.log(fileList)
-                subirArchivo(fileList![0])
+            const abrirSubirProductoButton = this.ownerDocument.createElement("button")
+            abrirSubirProductoButton.innerHTML = "Subir un Producto"
+            abrirSubirProductoButton.id = "prueba"
+            mainContainer.appendChild(abrirSubirProductoButton)
 
-                button.addEventListener("click", async () => {
-                    const url = await pedirURL(`images/${fileList![0].name}`)
-                    const image = this.ownerDocument.createElement("img")
-                    image.setAttribute("src", url)
-                    this.shadowRoot?.appendChild(image)
-                })
-            }, false)
+            const contenedorFormulario = this.ownerDocument.createElement("div")
+            contenedorFormulario.id = "contenedorFormulario"
+            contenedorFormulario.classList.add("oculto")
+            mainContainer.appendChild(contenedorFormulario)
 
+            const contenedorProductos = this.ownerDocument.createElement("div")
+            contenedorProductos.id = "contenedorProductos"
+            mainContainer.appendChild(contenedorProductos)
 
+            const xButton = this.ownerDocument.createElement("button")
+            xButton.innerText = "X"
+            contenedorFormulario.appendChild(xButton)
+
+            const inputNombre = this.ownerDocument.createElement("input")
+            inputNombre.setAttribute("type", "text")
+            inputNombre.setAttribute("placeholder", "Ingrese el nombre del producto")
+            contenedorFormulario.appendChild(inputNombre)
+
+            const inputDesc = this.ownerDocument.createElement("input")
+            inputDesc.setAttribute("type", "text")
+            inputDesc.setAttribute("placeholder", "Ingrese la descripcion del producto")
+            contenedorFormulario.appendChild(inputDesc)
+
+            const inputPrecio = this.ownerDocument.createElement("input")
+            inputPrecio.setAttribute("type", "text")
+            inputPrecio.setAttribute("placeholder", "Ingrese el precio del producto")
+            contenedorFormulario.appendChild(inputPrecio)
+
+            const inputCant = this.ownerDocument.createElement("input")
+            inputCant.setAttribute("type", "text")
+            inputCant.setAttribute("placeholder", "Ingrese la cantidad del producto")
+            contenedorFormulario.appendChild(inputCant)
+
+            const inputImagen = this.ownerDocument.createElement("input")
+            inputImagen.setAttribute("type", "text")
+            inputImagen.setAttribute("placeholder", "Suba la imagen del producto")
+            contenedorFormulario.appendChild(inputImagen)
+
+            const buttonSubirProducto = this.ownerDocument.createElement("button")
+            buttonSubirProducto.innerText = "SUBIR"
+            contenedorFormulario.appendChild(buttonSubirProducto)
+
+            tiempoRealProductos(contenedorProductos)
+
+            abrirSubirProductoButton.addEventListener("click", () => {
+                if (contenedorFormulario.classList.contains("oculto")) {
+                    contenedorFormulario.classList.remove("oculto")
+                    contenedorFormulario.classList.add("contenedorFormulario")
+                } else {
+                    this.cerrarModalSubir(contenedorFormulario)
+                }
+            })
+
+            xButton.addEventListener("click", () => {
+                this.cerrarModalSubir(contenedorFormulario)
+            })
+
+            buttonSubirProducto.addEventListener("click", () => {
+                subirProducto(inputNombre.value, inputDesc.value, inputPrecio.value, inputCant.value, inputImagen.value)
+                this.cerrarModalSubir(contenedorFormulario)
+            })
         }
+    }
 
+    cerrarModalSubir(modal: HTMLElement) {
+        modal.classList.remove("contenedorFormulario")
+        modal.classList.add("oculto")
     }
 }
 
