@@ -1,6 +1,5 @@
-console.log("Funciona Typescript")
 import "./utilities/firebase"
-import { pedirURL, subirArchivo, subirProducto, tiempoRealProductos, traerProductos } from "./utilities/firebase"
+import { subirProducto, tiempoRealProductos, traerProductos } from "./utilities/firebase"
 
 class AppContainer extends HTMLElement {
     constructor() {
