@@ -67,7 +67,7 @@ class AppContainer extends HTMLElement {
             contenedorFormulario.appendChild(inputCant)
 
             const inputImagen = this.ownerDocument.createElement("input")
-            inputImagen.setAttribute("type", "text")
+            inputImagen.setAttribute("type", "file")
             inputImagen.setAttribute("placeholder", "Suba la imagen del producto")
             contenedorFormulario.appendChild(inputImagen)
 
@@ -91,7 +91,7 @@ class AppContainer extends HTMLElement {
             })
 
             buttonSubirProducto.addEventListener("click", () => {
-                subirProducto(inputNombre.value, inputDesc.value, inputPrecio.value, inputCant.value, inputImagen.value)
+                subirProducto(inputNombre.value, inputDesc.value, inputPrecio.value, inputCant.value, inputImagen.files![0])
                 this.cerrarModalSubir(contenedorFormulario)
             })
         }
